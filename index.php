@@ -14,6 +14,17 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 $requestPath = $_SERVER['REQUEST_URI'];
 
 /**
+ * Redirects to the specified path.
+ * 
+ * @param $path string
+ */
+function redirectTo($path)
+{
+    header("Location: {$path}", $replace = true, $code = 301);
+    exit;
+}
+
+/**
  * 
  * 
  * @param $requestMethod string
@@ -30,8 +41,7 @@ if ($requestMethod === 'GET' and $requestPath === '/') {
         </html>
     HTML;
 }else if($requestPath === '/home'){
-    header('Location: /', $replace=true, $code = 301);
-    exit;
+    redirectTo('/');
 }else{
     include(__DIR__.'/includes/404.php');
 }
