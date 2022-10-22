@@ -31,6 +31,7 @@ function redirectTo($path)
  */
 function abort($code){
     global $routes;
+    header('HTTP/1.1 500 Internal Server Error');
     $routes[$code]();
 }
 
