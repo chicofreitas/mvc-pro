@@ -36,7 +36,17 @@ return function(Router $router){
 
             $parameters = $router->current()->parameters();
             
-            return "Product {$parameters['id']}";
+            return "Post id: {$parameters['id']}";
         }
     );
+
+    // a named route
+    $router->add(
+        'GET', 'posts/{slug?}',
+        function() use ($router) {
+            $parameters = $router->current()->parameters();
+
+            return "Post slug: {$parameters['slug']}";
+        }
+    )->name('post-page');
 };

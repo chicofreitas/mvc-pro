@@ -54,11 +54,68 @@ class Route
     }
 
     /**
-     * @todo
+     * 
+     * 
+     * @param string $method
+     * @param string $path
+     * 
+     * @return bool
      */
     public function matches(string $method, string $path) : bool
     {
-        return $this->method === $method && $this->path === $path;
+        if ($this->method === $method && $this->path === $path  ) {
+            return true;
+        }
+
+        // Caso não haja $path valido, vamos procurar por named routes.
+
+        $parametersNames = [];
+
+        $pattern = $this->normalizePath($this->path);
+
+        $pattern = preg_replace_callback(
+            '#{([^}]+)}/#',
+            function(array $found) use (&$parametersNames){
+
+                array_push(
+                    $parametersNames, rtrim($found[1], '?') // remove a ? do final da string caso ela exista.
+                );
+
+                if (str_ends_with($found[1], '?')) {
+                    return '([^/]*)(?:/?)'; //
+                }
+
+                return '([^/]+)';
+            },
+            $pattern
+        );
+
+        if (!str_contains($pattern, '+') && !str_contains($pattern, '*')) {
+            return false;
+        }
+        
+        preg_match_all("#{$pattern}#", $this->normalizePath($path), $matches);
+
+        $parameterValues = [];
+
+        if (count($matches[1]) > 0) {
+            
+            foreach ($matches[1] as $value) {
+                array_push($parameterValues, $value);
+            }
+
+            $emptyValues = array_fill(
+                0, count($parameterValues),null
+            );
+
+            $parameterValues += $emptyValues;
+
+            $this->parameters = array_combine($parametersNames, $parameterValues);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -77,5 +134,19 @@ class Route
         return $this->parameters;
     }
 
+    /**
+     * 
+     * 
+     * @param string $path
+     * @return string
+     */
+    protected function normalizePath(string $path) : string
+    {
+        $path = trim($path, '/');
+        $path = "/{$path}/";
 
+        $path = preg_replace("/[\/]{2,}/", '/', $path);
+
+        return $path;
+    }
 }
