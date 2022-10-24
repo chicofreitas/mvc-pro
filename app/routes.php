@@ -29,4 +29,14 @@ return function(Router $router){
     );
 
     $router->errorHandler(404, fn() => 'Nada encontrado, sorry!');
+
+    $router->add(
+        'GET', '/posts/{id}',
+        function () use ($router) {
+
+            $parameters = $router->current()->parameters();
+            
+            return "Product {$parameters['id']}";
+        }
+    );
 };

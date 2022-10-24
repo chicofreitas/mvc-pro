@@ -17,6 +17,11 @@ class Router{
     protected array $errorHandlers = [];
 
     /**
+     * @var Route $current
+     */
+    protected Route $current;
+
+    /**
      * Adiciona uma Rota ao array $routes
      * 
      * @param $method string
@@ -142,5 +147,15 @@ class Router{
     {
         header("Location: {$path}", $replace = true, $code = 301);
         exit;
+    }
+
+    /**
+     * 
+     * 
+     * @return mixed
+     */
+    public function current() : ?Route
+    {
+        return $this->current;
     }
 }

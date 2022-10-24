@@ -20,6 +20,11 @@ class Route
     protected string $handler;
 
     /**
+     * @var array $parameters
+     */
+    protected array $parameters;
+
+    /**
      * 
      * @param $method string
      * @param $path string
@@ -49,7 +54,7 @@ class Route
     }
 
     /**
-     * 
+     * @todo
      */
     public function matches(string $method, string $path) : bool
     {
@@ -63,4 +68,14 @@ class Route
     {
         return call_user_func($this->handler);
     }
+
+    /**
+     * @return array $parameters
+     */
+    public function parameters() : array
+    {
+        return $this->parameters;
+    }
+
+
 }
