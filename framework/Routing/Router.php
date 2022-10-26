@@ -3,6 +3,7 @@
 namespace Framework\Routing;
 
 use Framework\Routing\Route;
+use Exception;
 
 class Router{
 
@@ -157,5 +158,37 @@ class Router{
     public function current() : ?Route
     {
         return $this->current;
+    }
+
+    /**
+     * 
+     * @param string $name
+     * @param array $parameters
+     * @return string
+     */
+    public function route(string $name, array $parameters = []) : string
+    {
+        foreach ($this->routes as  $route) {
+            if ($route->name() === $name) {
+                $finds = [];
+                $replaces = [];
+                
+                foreach ($parameters as $key => $value) {
+                    array_push($finds, "{{$key}}");
+                    array_push($replaces, $value);
+                    array_push($finds, "{{$key}?}");
+                    array_push($replaces, $value);
+                }
+
+                $path = $route->path();
+                $path = str_replace($finds, $replaces, $path);
+                $path = preg_replace('#{[^}]+}#', '',$path);
+                
+                return $path;
+            }
+        }
+
+        throw new Exception('no route with that name', 1);
+        
     }
 }
