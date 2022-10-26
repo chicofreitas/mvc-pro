@@ -25,6 +25,11 @@ class Route
     protected array $parameters;
 
     /**
+     * @var string
+     */
+    protected ?string $name = null;
+    
+    /**
      * 
      * @param $method string
      * @param $path string
@@ -148,5 +153,20 @@ class Route
         $path = preg_replace("/[\/]{2,}/", '/', $path);
 
         return $path;
+    }
+
+    /**
+     * 
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    public function name(string $name = null) : mixed
+    {
+        if ($name) {
+            $this->name = $name;
+            return $this;
+        }
+        return $this->name;
     }
 }
